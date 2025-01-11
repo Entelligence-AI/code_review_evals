@@ -1,6 +1,6 @@
-# CodeReviewAnalyzer
+# Code Review Analyzer
 
-A tool to analyze and evaluate code review comments from different AI code review bots using LLMs (Claude, GPT-4, and Gemini).
+A tool to analyze and evaluate code review comments from different AI code review bots using LLMs (Claude, GPT-4, and Gemini).  This library will pull all the comments left on a codebase by different bots, analyze them using the same evaluation logic and report back scores on effectiveness per bot.
 
 ## Features
 
@@ -57,35 +57,6 @@ visualizer.save_metrics_report(metrics, 'report.txt')
 ```
 
 2. Try it in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yourusername/CodeReviewAnalyzer/blob/main/notebooks/analyze_code_reviews.ipynb)
-
-## Project Structure
-
-```
-CodeReviewAnalyzer/
-├── src/
-│   ├── github/
-│   │   ├── __init__.py
-│   │   └── api.py
-│   ├── analyzers/
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── gemini.py
-│   │   ├── claude.py
-│   │   └── gpt4.py
-│   ├── visualization/
-│   │   ├── __init__.py
-│   │   └── visualizer.py
-│   └── utils/
-│       ├── __init__.py
-│       └── rate_limiter.py
-├── notebooks/
-│   └── analyze_code_reviews.ipynb
-├── tests/
-│   └── ...
-├── requirements.txt
-├── setup.py
-└── README.md
-```
 
 ## Contributing
 
