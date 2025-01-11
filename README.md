@@ -1,6 +1,6 @@
-# CodeReviewAnalyzer
+# Code Review Analyzer
 
-A tool to analyze and evaluate code review comments from different AI code review bots using LLMs (Claude, GPT-4, and Gemini).
+A tool to analyze and evaluate code review comments from different AI code review bots using LLMs (Claude, GPT-4, and Gemini).  This library will pull all the comments left on a codebase by different bots, analyze them using the same evaluation logic and report back scores on effectiveness per bot.
 
 ## Features
 
