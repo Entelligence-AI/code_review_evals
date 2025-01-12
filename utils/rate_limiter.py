@@ -2,6 +2,7 @@ import asyncio
 import time
 import random
 import logging
+from typing import Callable, Any
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class RateLimiter:
                 self.tokens -= 1
 
 
-async def make_api_call_with_backoff(func, *args, max_retries=5, initial_delay=1):
+async def make_api_call_with_backoff(func: Callable, *args, max_retries=5, initial_delay=1) -> Any:
     """Make API call with exponential backoff retry logic"""
     delay = initial_delay
     last_exception = None
@@ -40,21 +41,17 @@ async def make_api_call_with_backoff(func, *args, max_retries=5, initial_delay=1
     for retry in range(max_retries):
         try:
             return await asyncio.to_thread(func, *args)
-
         except Exception as e:
             last_exception = e
 
-            # Check if it's a rate limit error
             if '429' in str(e):
                 sleep_time = delay * (2 ** retry) + random.uniform(0, 0.1)
                 logger.warning(f"Rate limit hit, retrying in {sleep_time:.2f} seconds...")
                 await asyncio.sleep(sleep_time)
                 continue
             else:
-                # For non-rate-limit errors, raise immediately
                 raise
 
-    # If we've exhausted retries, raise the last exception
     logger.error(f"Failed after {max_retries} retries. Last error: {last_exception}")
     raise last_exception
 

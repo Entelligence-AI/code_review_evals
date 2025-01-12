@@ -1,25 +1,9 @@
 import aiohttp
 import logging
-from dataclasses import dataclass
 from typing import List
+from models import ReviewComment, PRDiff
 
 logger = logging.getLogger(__name__)
-
-@dataclass
-class ReviewComment:
-    file_name: str
-    chunk: str
-    comment: str
-    line_nums: str
-    bot_name: str
-    pr_number: int
-    category: str = None
-
-@dataclass
-class PRDiff:
-    pr_number: int
-    diff_content: str
-    files_changed: List[str]
 
 class GitHubAPI:
     def __init__(self, token: str, repo: str):
@@ -63,8 +47,10 @@ class GitHubAPI:
 
             return prs[:limit]
 
+
     async def fetch_pr_diff(self, pr_number: int) -> PRDiff:
         """Fetch the diff content for a PR"""
+        logger.info(f"Fetching PR {pr_number}")
         async with aiohttp.ClientSession(headers=self.diff_headers) as session:
             url = f"https://api.github.com/repos/{self.repo}/pulls/{pr_number}"
 
@@ -73,14 +59,27 @@ class GitHubAPI:
                     raise Exception(f"Failed to fetch PR diff: {await response.text()}")
 
                 diff_content = await response.text()
-                files_changed = [line.split(" ")[2] for line in diff_content.split("\n") 
-                               if line.startswith("+++ b/")]
+                files_changed = []
+                
+                # More robust file path extraction
+                for line in diff_content.split("\n"):
+                    if line.startswith("+++ b/"):
+                        try:
+                            # Remove the "+++ b/" prefix to get the file path
+                            file_path = line[6:]  # "+++ b/" is 6 characters
+                            if file_path and file_path != '/dev/null':  # Skip deleted files
+                                files_changed.append(file_path)
+                        except Exception as e:
+                            logger.warning(f"Could not parse file path from line: {line}")
+                            continue
 
+                logger.debug(f"Found {len(files_changed)} changed files in PR {pr_number}")
                 return PRDiff(
                     pr_number=pr_number,
                     diff_content=diff_content,
                     files_changed=files_changed
                 )
+            
 
     async def fetch_pr_comments(self, pr_number: int) -> List[ReviewComment]:
         """Fetch review comments for a PR"""
@@ -104,5 +103,4 @@ class GitHubAPI:
                     for comment in comments
                     if 'bot' in comment['user']['type'].lower()
                 ]
-            
             

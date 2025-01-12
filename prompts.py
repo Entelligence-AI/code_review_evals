@@ -4,6 +4,7 @@ Each prompt is organized by analyzer type and purpose.
 """
 
 # Common templates that can be used across different analyzers
+# Common templates that can be used across different analyzers
 DIFF_ANALYSIS_TEMPLATE = """You are a senior staff principle engineer performing a security and functionality focused code review.
 Go through this PR diff line by line, focusing ONLY on bugs that could cause:
 1. Runtime errors or crashes
@@ -14,6 +15,9 @@ Go through this PR diff line by line, focusing ONLY on bugs that could cause:
 6. Data loss or corruption
 7. Performance issues
 8. Resource leaks
+
+Analyze this diff:
+{diff}
 
 Remember: Only report issues that could actually break functionality or corrupt data at runtime."""
 
@@ -27,18 +31,18 @@ GEMINI_PROMPTS = {
     "diff_analysis": f"""{DIFF_ANALYSIS_TEMPLATE}
 
 The output format should be the following JSON EXACTLY:
-{{
-    'issues': [
-        {{
-            'bug_description': '1-2 line description of how this bug impacts runtime behavior and how to fix it',
-            'severity': 'HIGH|MEDIUM|LOW based on potential user impact',
-            'bug_type': 'RACE_CONDITION|STATE_MANAGEMENT|MEMORY_LEAK|SECURITY|CRASH|CORRUPTION',
-            'file_name': 'Affected file',
-            'line_numbers': 'Relevant line numbers',
-            'snippet': 'Code showing the bug'
-        }}
+{{{{
+    "issues": [
+        {{{{
+            "bug_description": "1-2 line description of how this bug impacts runtime behavior and how to fix it",
+            "severity": "HIGH|MEDIUM|LOW based on potential user impact",
+            "bug_type": "RACE_CONDITION|STATE_MANAGEMENT|MEMORY_LEAK|SECURITY|CRASH|CORRUPTION",
+            "file_name": "Affected file",
+            "line_numbers": "Relevant line numbers",
+            "snippet": "Code showing the bug"
+        }}}}
     ]
-}}""",
+}}}}""",
 
     "comment_categorization": f"""As a senior engineer, analyze these code review comments and categorize each one into exactly ONE of:
 {COMMENT_CATEGORIES}
@@ -47,11 +51,11 @@ PR #{{pr_number}} by {{bot_name}}:
 {{comments}}
 
 Respond with a JSON array where each object has:
-{{
-    "comment_index": <index>,
+{{{{
+    "comment_index": "<index>",
     "category": "CRITICAL_BUG|NITPICK|OTHER",
     "reasoning": "Brief explanation of why this category was chosen"
-}}
+}}}}
 IMPORTANT: Each comment MUST be categorized. The category field MUST be exactly one of CRITICAL_BUG, NITPICK, or OTHER."""
 }
 
