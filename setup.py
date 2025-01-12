@@ -7,16 +7,14 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="code-review-analyzer",
+    name="code_review_evals",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
-    description="A tool to analyze and evaluate code review comments from different AI code review bots",
+    author="Entelligence AI",
+    description="A tool to analyze and evaluate code review comments from different AI models",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/CodeReviewAnalyzer",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    url="https://github.com/Entelligence-AI/code_review_evals",
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -30,9 +28,4 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=requirements,
-    entry_points={
-        "console_scripts": [
-            "code-review-analyzer=code_review_analyzer.cli:main",
-        ],
-    },
 )
