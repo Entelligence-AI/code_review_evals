@@ -1,74 +1,92 @@
-# Code Review Analyzer
+# Code Review Evaluator
 
-A tool to analyze and evaluate code review comments from different AI code review bots using LLMs (Claude, GPT-4, and Gemini).  This library will pull all the comments left on a codebase by different bots, analyze them using the same evaluation logic and report back scores on effectiveness per bot.
+A tool to analyze and evaluate code review comments from different AI code review bots using LLMs.
 
 ## Features
 
-- Fetches PR data and code review comments from GitHub repositories
-- Analyzes code review comments using multiple LLM providers:
-  - Google's Gemini
-  - Anthropic's Claude
-  - OpenAI's GPT-4
+- Fetches and analyzes Pull Request data from GitHub repositories
+- Evaluates code review comments using Google's Gemini model
 - Categorizes comments into:
   - Critical Bugs
   - Nitpicks
   - Other feedback
 - Generates visual analysis and detailed reports
-- Includes rate limiting and retry mechanisms
-- Supports async operations for better performance
 
-## Installation
+## Quick Start
 
+1. Clone the repository:
+```bash
+git clone https://github.com/Entelligence-AI/code_review_evals.git
+cd code_review_evals
+```
+
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configuration
-
-Create a `.env` file with your API keys:
-
-```env
-GITHUB_TOKEN=your_github_token
-GOOGLE_API_KEY=your_gemini_api_key
-ANTHROPIC_KEY=your_claude_api_key
-OPENAI_API_KEY=your_openai_api_key
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env and add your API keys
 ```
 
-## Usage
-
-1. Basic usage:
-
-```python
-from code_review_analyzer import GitHubAPI, ReviewAnalyzer, ResultsVisualizer
-
-# Initialize components
-github = GitHubAPI(github_token, repo_name)
-analyzer = ReviewAnalyzer(google_api_key)
-visualizer = ResultsVisualizer()
-
-# Fetch and analyze PRs
-prs = await github.fetch_recent_prs(limit=100)
-comments = await github.fetch_pr_comments(pr_number)
-metrics = await analyzer.analyze_comment_quality(comments)
-
-# Generate visualizations
-visualizer.create_impact_distribution_chart(metrics, 'distribution.png')
-visualizer.save_metrics_report(metrics, 'report.txt')
+4. Run the analysis:
+```bash
+python main.py
 ```
 
-2. Try it in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yourusername/CodeReviewAnalyzer/blob/main/notebooks/analyze_code_reviews.ipynb)
+## Environment Setup
+
+Required environment variables in your `.env` file:
+```
+GITHUB_TOKEN=your_github_personal_access_token_here
+GOOGLE_API_KEY=your_gemini_api_key_here
+GITHUB_REPO=owner/repo  # default: microsoft/typescript
+NUM_PRS=5  # number of PRs to analyze
+```
+
+To get the required API keys:
+- GitHub Token: https://github.com/settings/tokens
+  - Needs `repo` scope access
+- Google API Key: https://makersuite.google.com/app/apikey
+  - Enable Gemini API access
+
+## Output
+
+The tool generates several outputs in the `analysis_results` directory:
+1. `comment_distribution.png` - Visual breakdown of comment categories
+2. `bot_comparison.png` - Comparison of different bot performances
+3. `analysis_report.txt` - Detailed metrics and analysis
+
+## Alternative Usage: Jupyter Notebook
+
+For interactive analysis, you can use the provided notebook:
+```bash
+jupyter notebook notebooks/code_review_analysis.ipynb
+```
+
+## Development
+
+Project structure:
+```
+code_review_evals/
+├── analyzers/        # Analysis modules for different LLMs
+├── github/          # GitHub API interaction
+├── utils/           # Utility functions
+├── visualization/   # Visualization tools
+├── models.py        # Data models
+├── prompts.py       # LLM prompts
+├── main.py         # Main execution script
+└── requirements.txt
+```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
