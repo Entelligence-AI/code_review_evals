@@ -161,8 +161,8 @@ async def main():
                     comments_log.write(f"PR Title: {pr.get('title', 'No Title')}\n")
                     comments_log.write(f"PR URL: {pr.get('html_url', 'No URL')}\n\n")
                     
-                    try:
-                        logger.info(f"Fetching PR {pr_number}")
+            
+            async with aiofiles.open(comments_log_path, 'w') as comments_log:
                         diff = await github.fetch_pr_diff(pr_number)
                         logger.info(f"Fetching comments for PR {pr_number}")
                         bot_comments = await github.fetch_pr_comments(pr_number)
